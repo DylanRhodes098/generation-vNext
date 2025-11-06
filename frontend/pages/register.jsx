@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register as userRegister } from "../services/auth";
+import React from 'react';
+import { Button, Checkbox, Form, Input } from 'antd';
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -21,8 +23,28 @@ export default function Register() {
         }
     }
 
+    const onFinish = values => {
+        console.log('Success:', values);
+      };
+      const onFinishFailed = errorInfo => {
+        console.log('Failed:', errorInfo);
+      }
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <Form
+                   name="basic"
+                   labelCol={{ span: 8 }}
+                   wrapperCol={{ span: 16 }}
+                   style={{ maxWidth: 600 }}
+                   initialValues={{ remember: true }}
+                   onFinish={onFinish}
+                   onFinishFailed={onFinishFailed}
+                   autoComplete="off"
+                onSubmit={onSubmit} 
+                className="bg-white shadow rounded-lg p-6 space-y-4">
+
+
+<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="w-full max-w-md space-y-6">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-gray-900">Create your account</h1>
@@ -30,12 +52,18 @@ export default function Register() {
                         Already have an account?{' '}
                         <Link className="text-blue-600 hover:text-blue-500" to="/login">Sign in</Link>
                     </p>
+                </div>  
+                </div>
                 </div>
 
-                <form onSubmit={onSubmit} className="bg-white shadow rounded-lg p-6 space-y-4">
                     <div>
-                        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-                        <input
+                        <Form.Item
+                              label="Full Name"
+                              name="fullName"
+                              rules={[{ required: true, message: 'Please input your username!' }]}
+                        htmlFor="fullName" 
+                        className="block text-sm font-medium text-gray-700">
+                        <Input
                             id="fullName"
                             type="text"
                             value={fullName}
@@ -45,11 +73,17 @@ export default function Register() {
                             required
                             autoComplete="name"
                         />
+                        </Form.Item>
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
+                        <Form.Item
+                              label="Email"
+                              name="email"
+                              rules={[{ required: true, message: 'Please input your password!' }]}  
+                        htmlFor="email" 
+                        className="block text-sm font-medium text-gray-700">
+                        <Input
                             id="email"
                             type="email"
                             value={email}
@@ -59,11 +93,17 @@ export default function Register() {
                             required
                             autoComplete="email"
                         />
+                        </Form.Item>
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                        <input
+                        <Form.Item
+                             label="Password"
+                             name="password"
+                             rules={[{ required: true, message: 'Please input your password!' }]} 
+                        htmlFor="password" 
+                        className="block text-sm font-medium text-gray-700">
+                        <Input
                             id="password"
                             type="password"
                             value={password}
@@ -73,21 +113,21 @@ export default function Register() {
                             required
                             autoComplete="new-password"
                         />
+                        </Form.Item>
                     </div>
 
                     {err ? (
                         <p className="text-sm text-red-600">{err}</p>
                     ) : null}
 
-                    <button
-                        type="submit"
-                        className="w-full inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    <Button
+                    type="primary" 
+                    htmlType="submit"
+                        className=""
                     >
                         Register
-                    </button>
-                </form>
-            </div>
-        </div>
+                    </Button>
+                </Form>
     );
 }
         
