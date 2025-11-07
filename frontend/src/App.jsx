@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import './App.css'
 import {Routes, Route, Link} from "react-router-dom";
 
 import Login from "../pages/login";
 import Register from "../pages/register";
-import Home from '../pages/Home';
+import Global from '../pages/Global';
+import MyMembers from '../pages/myMembers';
 import Layout from '../components/layout';
 
 function App() {
@@ -16,7 +16,8 @@ function App() {
         <Route path="/register" element={<Register/>} />
 
         <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        <Route path="/GlobalMembers" element={<Global />} />
+        <Route path="/myMembers" element={<MyMembers />} />
       </Route>
       </Routes>
     </>

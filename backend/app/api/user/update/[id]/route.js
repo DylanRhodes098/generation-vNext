@@ -1,9 +1,17 @@
 // Import tools //
 import { NextResponse } from "next/server";
 import {userUpdate, userUpdateWithId} from "../../../../../validation/user";
+import { corsHeaders } from "../../../../../lib/cors.js";
 
 // Import files //
 import User from "../../../../../models/user";
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 200,
+        headers: corsHeaders(),
+    });
+}
 
 // Initiate PUT function to edit user //
 export async function PUT(req, {params}) {
@@ -13,7 +21,10 @@ export async function PUT(req, {params}) {
         const parsed = userUpdateWithId.safeParse({id, ...body})
       
         if (!parsed.success) {
-            return NextResponse.json({ error: "validation failed", message: parsed.error.format() }, { status: 400 });
+            return NextResponse.json({ error: "validation failed", message: parsed.error.format() }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
 
         const { id: userId, full_name, email, password } = parsed.data;
@@ -21,19 +32,28 @@ export async function PUT(req, {params}) {
         const [user] = await User.update({full_name, email, password }, { where: { id: userId }});
 
         if (user === 0) {
-            return NextResponse.json({ error: "can not find user id" }, { status: 400 });
+            return NextResponse.json({ error: "can not find user id" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
       
           const updatedUser = await User.findByPk(userId);
 
-        return NextResponse.json ({message: "user updated", user: updatedUser }, { status: 200 });
+        return NextResponse.json ({message: "user updated", user: updatedUser }, { 
+            status: 200,
+            headers: corsHeaders(),
+        });
 
         } catch (err) {
             const msg =
           process.env.NODE_ENV === "development"
             ? err.parent?.sqlMessage || err.message
             : "Error retrieving groups";
-            return NextResponse.json({ msg, error: "failed updating user" }, { status: 400 });
+            return NextResponse.json({ msg, error: "failed updating user" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
     }
 

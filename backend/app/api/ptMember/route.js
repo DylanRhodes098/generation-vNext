@@ -1,18 +1,32 @@
 import { NextResponse } from "next/server";
 import PtMember from "../../../models/ptMember.js";
+import { corsHeaders } from "../../../lib/cors.js";
 
 export const runtime = 'nodejs';
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 200,
+        headers: corsHeaders(),
+    });
+}
 
 export async function GET() {
     try {
         const ptMembers = await PtMember.findAll();
         if (!ptMembers) {
-            return NextResponse.json({ error: "cannot find ptMembers" }, { status: 400 });
+            return NextResponse.json({ error: "cannot find ptMembers" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
-        return NextResponse.json(ptMembers);
+        return NextResponse.json(ptMembers, { headers: corsHeaders() });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ error: "failed retrieving ptMembers" }, { status: 400 });
+        return NextResponse.json({ error: "failed retrieving ptMembers" }, { 
+            status: 400,
+            headers: corsHeaders(),
+        });
     }
 }
 
@@ -22,7 +36,10 @@ export async function POST(req) {
         const { gymId, ptId, memberId, notes, status, lastContactedAt, nextActionAt } = body || {};
 
         if (!gymId || !ptId || !memberId) {
-            return NextResponse.json({ error: "gymId, ptId and memberId are required" }, { status: 400 });
+            return NextResponse.json({ error: "gymId, ptId and memberId are required" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
 
         const created = await PtMember.create({
@@ -35,10 +52,16 @@ export async function POST(req) {
             nextActionAt: nextActionAt ? new Date(nextActionAt) : null,
         });
 
-        return NextResponse.json(created, { status: 201 });
+        return NextResponse.json(created, { 
+            status: 201,
+            headers: corsHeaders(),
+        });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ error: "failed creating ptMember" }, { status: 400 });
+        return NextResponse.json({ error: "failed creating ptMember" }, { 
+            status: 400,
+            headers: corsHeaders(),
+        });
     }
 }
 
@@ -48,12 +71,18 @@ export async function PUT(req) {
         const { id, ...updates } = body || {};
 
         if (!id) {
-            return NextResponse.json({ error: "id is required" }, { status: 400 });
+            return NextResponse.json({ error: "id is required" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
 
         const ptMember = await PtMember.findByPk(id);
         if (!ptMember) {
-            return NextResponse.json({ error: "ptMember not found" }, { status: 404 });
+            return NextResponse.json({ error: "ptMember not found" }, { 
+                status: 404,
+                headers: corsHeaders(),
+            });
         }
 
         if (updates.lastContactedAt !== undefined) {
@@ -64,10 +93,13 @@ export async function PUT(req) {
         }
 
         await ptMember.update(updates);
-        return NextResponse.json(ptMember);
+        return NextResponse.json(ptMember, { headers: corsHeaders() });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ error: "failed updating ptMember" }, { status: 400 });
+        return NextResponse.json({ error: "failed updating ptMember" }, { 
+            status: 400,
+            headers: corsHeaders(),
+        });
     }
 }
 
@@ -77,18 +109,27 @@ export async function DELETE(req) {
         const id = searchParams.get("id");
 
         if (!id) {
-            return NextResponse.json({ error: "id query param is required" }, { status: 400 });
+            return NextResponse.json({ error: "id query param is required" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
 
         const deleted = await PtMember.destroy({ where: { id } });
         if (!deleted) {
-            return NextResponse.json({ error: "ptMember not found" }, { status: 404 });
+            return NextResponse.json({ error: "ptMember not found" }, { 
+                status: 404,
+                headers: corsHeaders(),
+            });
         }
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true }, { headers: corsHeaders() });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ error: "failed deleting ptMember" }, { status: 400 });
+        return NextResponse.json({ error: "failed deleting ptMember" }, { 
+            status: 400,
+            headers: corsHeaders(),
+        });
     }
 }
 

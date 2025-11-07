@@ -5,129 +5,104 @@ import React from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 
 export default function Register() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [fullName, setFullName] = useState("");
     const [err, setErr] = useState("");
     const navigate = useNavigate();
 
-    async function onSubmit(e) {
-        e.preventDefault();
+    const onFinish = async (values) => {
         setErr("");
         try {
-            await userRegister({ full_name: fullName, password, email });
+            await userRegister({ full_name: values.fullName, password: values.password, email: values.email });
             navigate("/login", { replace: true });
         } catch (error) {
             const message = error?.response?.data?.error || "Something went wrong";
             setErr(message);
         }
-    }
+    };
 
-    const onFinish = values => {
-        console.log('Success:', values);
-      };
-      const onFinishFailed = errorInfo => {
+    const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
-      }
+    };
 
     return (
-        <Form
-                   name="basic"
-                   labelCol={{ span: 8 }}
-                   wrapperCol={{ span: 16 }}
-                   style={{ maxWidth: 600 }}
-                   initialValues={{ remember: true }}
-                   onFinish={onFinish}
-                   onFinishFailed={onFinishFailed}
-                   autoComplete="off"
-                onSubmit={onSubmit} 
-                className="bg-white shadow rounded-lg p-6 space-y-4">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="w-full max-w-md">
+                <Form
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 600 }}
+                    initialValues={{ remember: true }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                    className="bg-white shadow rounded-lg p-6 space-y-4"
+                >
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-gray-900">Create your account</h1>
+                        <p className="mt-2 text-sm text-gray-600">
+                            Already have an account?{' '}
+                            <Link className="text-blue-600 hover:text-blue-500" to="/login">Sign in</Link>
+                        </p>
+                    </div>
 
-
-<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="w-full max-w-md space-y-6">
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Create your account</h1>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Already have an account?{' '}
-                        <Link className="text-blue-600 hover:text-blue-500" to="/login">Sign in</Link>
-                    </p>
-                </div>  
-                </div>
-                </div>
-
-                    <div>
-                        <Form.Item
-                              label="Full Name"
-                              name="fullName"
-                              rules={[{ required: true, message: 'Please input your username!' }]}
-                        htmlFor="fullName" 
-                        className="block text-sm font-medium text-gray-700">
+                    <Form.Item
+                        label="Full Name"
+                        name="fullName"
+                        rules={[{ required: true, message: 'Please input your full name!' }]}
+                    >
                         <Input
                             id="fullName"
                             type="text"
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
                             placeholder="John Doe"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             required
                             autoComplete="name"
                         />
-                        </Form.Item>
-                    </div>
+                    </Form.Item>
 
-                    <div>
-                        <Form.Item
-                              label="Email"
-                              name="email"
-                              rules={[{ required: true, message: 'Please input your password!' }]}  
-                        htmlFor="email" 
-                        className="block text-sm font-medium text-gray-700">
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your email!' }]}
+                    >
                         <Input
                             id="email"
                             type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="you@example.com"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             required
                             autoComplete="email"
                         />
-                        </Form.Item>
-                    </div>
+                    </Form.Item>
 
-                    <div>
-                        <Form.Item
-                             label="Password"
-                             name="password"
-                             rules={[{ required: true, message: 'Please input your password!' }]} 
-                        htmlFor="password" 
-                        className="block text-sm font-medium text-gray-700">
-                        <Input
+                    <Form.Item
+                        label="Password"
+                        name="password"
+                        rules={[{ required: true, message: 'Please input your password!' }]}
+                    >
+                        <Input.Password
                             id="password"
                             type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             required
                             autoComplete="new-password"
                         />
-                        </Form.Item>
-                    </div>
+                    </Form.Item>
 
                     {err ? (
                         <p className="text-sm text-red-600">{err}</p>
                     ) : null}
 
-                    <Button
-                    type="primary" 
-                    htmlType="submit"
-                        className=""
-                    >
-                        Register
-                    </Button>
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button
+                            type="primary" 
+                            htmlType="submit"
+                            className="w-full"
+                        >
+                            Register
+                        </Button>
+                    </Form.Item>
                 </Form>
+            </div>
+        </div>
     );
 }
         

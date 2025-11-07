@@ -8,7 +8,7 @@ export default function TopNav () {
 
     return (
         <>
-        <div className="topNavWrapper p-4 m-4 flex flex-row justify-around">
+        <div className="topNavWrapper px-4 m-4 flex flex-row justify-around">
           
             <a className="" href="/"><img src="/public/webspacelogo.jpeg" height="60px" width="60px"/></a>
             

@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/auth";
+import { corsHeaders } from "../../../../lib/cors.js";
 
 // Import model files //
 
@@ -11,12 +12,22 @@ import User from "../../../../models/user.js";
 
 export const runtime = 'nodejs';
 
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 200,
+        headers: corsHeaders(),
+    });
+}
+
 // Create post route to login user //
 export async function POST(req) {
     try{
         const { email, password } = await req.json();
         if (!email || !password ) {
-            return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+            return NextResponse.json({ error: "Missing fields" }, { 
+                status: 400,
+                headers: corsHeaders(),
+            });
         }
 
 const user = await User.findOne({ where: { email: String(email).trim().toLowerCase() },
@@ -24,12 +35,18 @@ const user = await User.findOne({ where: { email: String(email).trim().toLowerCa
 
   const ok = user && await bcrypt.compare(password, user.password)
   if (!ok) {
-    return NextResponse.json({ error: "incorrect info" }, { status: 400 });
+    return NextResponse.json({ error: "incorrect info" }, { 
+        status: 400,
+        headers: corsHeaders(),
+    });
   }
 
   const userLogin = await signToken({ id: user.id, email: user.email })
 
-  const res = NextResponse.json(userLogin, { status: 200 });
+  const res = NextResponse.json(userLogin, { 
+      status: 200,
+      headers: corsHeaders(),
+  });
   res.cookies.set("session", userLogin, {
     httpOnly: true,
     secure: true,
@@ -45,7 +62,10 @@ const user = await User.findOne({ where: { email: String(email).trim().toLowerCa
           process.env.NODE_ENV === "development"
             ? err.parent?.sqlMessage || err.message
             : "Error retrieving groups";
-        return NextResponse.json({ msg, error: "failed Logging in" }, { status: 400 });
+        return NextResponse.json({ msg, error: "failed Logging in" }, { 
+            status: 400,
+            headers: corsHeaders(),
+        });
     }
 }
 
